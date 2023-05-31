@@ -16,7 +16,6 @@ concurrency:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PR_NUM: ${{ github.event.pull_request.number }}
-  CURRENT_DATE_TIME: ${{ steps.date.outputs.date }}
 
 
 jobs:
