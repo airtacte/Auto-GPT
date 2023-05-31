@@ -81,11 +81,14 @@ jobs:
       - name: Get the current date and time
         run: echo "CURRENT_DATE_TIME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      - name: Checkout v3
+      - name: Check out repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: "update-score-${{ env.PR_NUM }}-${{ env.CURRENT_DATE_TIME }}"
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          submodules: true
+          token: ${{ secrets.PAT_REVIEW }}
 
       - name: Update Score
         run: |
@@ -109,14 +112,6 @@ jobs:
           }'
           PR_URL=$(curl -s -X POST -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/pulls -d "$PR_BODY" | jq -r .html_url)
           echo $PR_URL
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          submodules: true
-          token: ${{ secrets.PAT_REVIEW }}
 
       - name: Make some changes
         run: |
